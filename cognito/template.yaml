@@ -8,26 +8,27 @@ Description: >
 
 Metadata:
   AWS::ServerlessRepo::Application:
-    Name: amazon-cognito-passwordless-email-auth
+    Name: amazon-cognito-passwordless-email-specific-domains
     Description: >
       An Amazon Cognito user pool, pre-configured with AWS Lambda triggers to implement passwordless e-mail auth
-    Author: AWS Samples
+    Author: Kazuki Matsuda
     SpdxLicenseId: MIT-0
     LicenseUrl: LICENSE
     ReadmeUrl: README.md
-    Labels: ['cognito', 'passwordless', 'authentication', 'auth', 'sample']
-    HomepageUrl: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth/tree/master/cognito
-    SemanticVersion: 0.1.1
-    SourceCodeUrl: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth/tree/master/cognito
+    Labels: ['cognito', 'passwordless', 'authentication', 'auth']
+    HomepageUrl: https://github.com/mats16/amazon-cognito-passwordless-email-specific-domains/tree/master/cognito
+    SemanticVersion: 0.1.2
+    SourceCodeUrl: https://github.com/mats16/amazon-cognito-passwordless-email-specific-domains/tree/master/cognito
 
 Globals:
   Function:
     Timeout: 3
 
 Parameters:
-  UserPoolName:
-    Type: String
-    Description: The name you want the User Pool to be created with
+  AllowedEmailDomains:
+    Type: CommaDelimitedList
+    Description: Specific domains allowed to regist
+    Default: amazon.com,amazon.co.jp
   SESFromAddress:
     Type: String
     Description: The e-mail address to send the secret login code from
@@ -70,11 +71,13 @@ Resources:
       CodeUri: lambda-triggers/pre-sign-up/
       Handler: pre-sign-up.handler
       Runtime: nodejs10.x
+      Environment:
+        Variables:
+          ALLOWED_DOMAINS: !Join [',', !Ref AllowedEmailDomains] 
 
   UserPool:
     Type: "AWS::Cognito::UserPool"
     Properties:
-      UserPoolName: !Ref UserPoolName
       Schema:
         - Name: name
           AttributeDataType: String
@@ -139,6 +142,9 @@ Resources:
         - CUSTOM_AUTH_FLOW_ONLY
 
 Outputs:
+  UserPoolArn:
+    Description: ARN of the User Pool
+    Value: !GetAtt UserPool.Arn
   UserPoolId:
     Description: ID of the User Pool
     Value: !Ref UserPool

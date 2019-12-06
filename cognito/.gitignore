@@ -135,3 +135,6 @@ packaged.yaml
 
 # Ignore local file for setting environment variables
 setenvs.sh
+
+# AWS SAM
+samconfig.toml

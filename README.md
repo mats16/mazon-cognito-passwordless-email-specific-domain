@@ -1,4 +1,4 @@
-## Amazon Cognito Passwordless Email Auth
+## Amazon Cognito Passwordless Email Auth Only Specific Domains
 
 This is the _**sample**_ code that comes together with [the blog post on passwordless e-mail auth in Amazon Cognito](https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/).
 
